@@ -7,13 +7,16 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  - task: JavaToolInstaller@0
-    inputs:
-      versionSpec: '17'
-      jdkArchitectureOption: 'x64'
   - script: |
+      sudo apt-get update
+      sudo apt-get install -y wget
+      sudo wget https://download.java.net/openjdk/jdk17/ri/openjdk-17+35_linux-x64_bin.tar.gz
+      sudo tar xvf openjdk-17+35_linux-x64_bin.tar.gz
+      sudo mv jdk-17 /usr/local/
+      sudo update-alternatives --install /usr/bin/java java /usr/local/jdk-17/bin/java 1
+      sudo update-alternatives --set java /usr/local/jdk-17/bin/java
       java -version
-    displayName: 'Verify Java Version'
+    displayName: 'Install and Verify Java 17'
   - script: |
       echo "Java setup complete"
     displayName: 'Confirmation Step'

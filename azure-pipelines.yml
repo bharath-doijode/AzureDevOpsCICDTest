@@ -4,6 +4,9 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  JAVA_HOME: /usr/lib/jvm/jdk-17
+
 steps:
 - script: |
     sudo apt-get update
@@ -15,7 +18,7 @@ steps:
     sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-17/bin/javac 1
     sudo update-alternatives --set java /usr/lib/jvm/jdk-17/bin/java
     sudo update-alternatives --set javac /usr/lib/jvm/jdk-17/bin/javac
-    java -version
+    echo "JAVA_HOME is set to $JAVA_HOME"
   displayName: 'Install and Verify Java 17'
 
 - script: |
@@ -26,8 +29,14 @@ steps:
   inputs:
     versionSpec: '20.15.1'
   displayName: 'Install Node.js'
+  env:
+    JAVA_HOME: $(JAVA_HOME)
 
 - script: |
+    export PATH=$JAVA_HOME/bin:$PATH
+    java -version
     npm install
     npm run android
   displayName: 'npm install and build'
+  env:
+    JAVA_HOME: $(JAVA_HOME)

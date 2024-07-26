@@ -12,7 +12,7 @@ steps:
     sudo apt-get update
     sudo apt-get install -y wget tar unzip
     echo "Downloading Java..."
-    wget -O openjdk-17_linux-x64_bin.tar.gz https://download.java.net/java/GA/jdk17/35/GPL/openjdk-17_linux-x64_bin.tar.gz || { echo "Download failed"; exit 1; }
+    wget -O openjdk-17_linux-x64_bin.tar.gz https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-aarch64_bin.tar.gz || { echo "Download failed"; exit 1; }
     echo "Extracting Java..."
     tar -xvf openjdk-17_linux-x64_bin.tar.gz || { echo "Extraction failed"; exit 1; }
     sudo mv jdk-17 /usr/lib/jvm/jdk-17
@@ -34,7 +34,7 @@ steps:
     unzip commandlinetools-linux-8512546_latest.zip -d $HOME/android-sdk
     export PATH=$PATH:$HOME/android-sdk/cmdline-tools/bin
     yes | sdkmanager --licenses
-    sdkmanager "platform-tools" "platforms;android-30"
+    sdkmanager "platform-tools" "platforms;android-34"
   displayName: 'Install Android SDK and Platform Tools'
 
 - task: NodeTool@0

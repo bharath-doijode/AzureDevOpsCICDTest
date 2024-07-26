@@ -52,7 +52,8 @@ steps:
     export PATH=$JAVA_HOME/bin:$PATH
     java -version
     npm install
-    npm run android || echo "npm run android failed"
+    cd android
+    ./gradlew assembleDebug
   displayName: 'npm install and build'
   env:
     JAVA_HOME: $(JAVA_HOME)

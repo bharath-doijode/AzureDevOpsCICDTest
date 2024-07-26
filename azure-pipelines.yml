@@ -1,38 +1,33 @@
 trigger:
 - main
 
-jobs:
-- job: SetUpJava
-  displayName: 'Set up Java 17'
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - script: |
-      sudo apt-get update
-      sudo apt-get install -y wget
-      sudo wget https://download.java.net/openjdk/jdk17/ri/openjdk-17+35_linux-x64_bin.tar.gz
-      sudo tar xvf openjdk-17+35_linux-x64_bin.tar.gz
-      sudo mv jdk-17 /usr/local/
-      sudo update-alternatives --install /usr/bin/java java /usr/local/jdk-17/bin/java 1
-      sudo update-alternatives --set java /usr/local/jdk-17/bin/java
-      java -version
-    displayName: 'Install and Verify Java 17'
-  - script: |
-      echo "Java setup complete"
-    displayName: 'Confirmation Step'
+pool:
+  vmImage: 'ubuntu-latest'
 
-- job: NodeSetup
-  displayName: 'Node.js Setup'
-  dependsOn: SetUpJava
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '20.15.1'
-    displayName: 'Install Node.js'
-  
-  - script: |
-      npm install
-      npm run android
-    displayName: 'npm install and build'
+steps:
+- script: |
+    sudo apt-get update
+    sudo apt-get install -y wget tar
+    wget https://download.java.net/java/GA/jdk17/35/GPL/openjdk-17_linux-x64_bin.tar.gz
+    tar -xvf openjdk-17_linux-x64_bin.tar.gz
+    sudo mv jdk-17 /usr/lib/jvm/
+    sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-17/bin/java 1
+    sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-17/bin/javac 1
+    sudo update-alternatives --set java /usr/lib/jvm/jdk-17/bin/java
+    sudo update-alternatives --set javac /usr/lib/jvm/jdk-17/bin/javac
+    java -version
+  displayName: 'Install and Verify Java 17'
+
+- script: |
+    echo "Java setup complete"
+  displayName: 'Confirmation Step'
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.15.1'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+    npm run android
+  displayName: 'npm install and build'

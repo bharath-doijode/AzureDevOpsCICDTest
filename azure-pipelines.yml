@@ -13,15 +13,18 @@ steps:
     sudo apt-get install -y wget tar unzip
     wget https://download.java.net/java/GA/jdk17/35/GPL/openjdk-17_linux-x64_bin.tar.gz
     tar -xvf openjdk-17_linux-x64_bin.tar.gz
-    sudo mv jdk-17 /usr/lib/jvm/
+    sudo mv jdk-17 /usr/lib/jvm/jdk-17
     sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-17/bin/java 1
     sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-17/bin/javac 1
     sudo update-alternatives --set java /usr/lib/jvm/jdk-17/bin/java
     sudo update-alternatives --set javac /usr/lib/jvm/jdk-17/bin/javac
     echo "JAVA_HOME is set to $JAVA_HOME"
-    echo "Checking Java installation"
     ls -l /usr/lib/jvm
     java -version
+    if [ ! -d "/usr/lib/jvm/jdk-17" ]; then
+      echo "Directory /usr/lib/jvm/jdk-17 does not exist"
+      exit 1
+    fi
   displayName: 'Install and Verify Java 17'
 
 - script: |
@@ -32,11 +35,6 @@ steps:
     sdkmanager "platform-tools" "platforms;android-30"
   displayName: 'Install Android SDK and Platform Tools'
 
-- script: |
-    export PATH=$JAVA_HOME/bin:$PATH
-    java -version
-  displayName: 'Verify Java Installation'
-
 - task: NodeTool@0
   inputs:
     versionSpec: '20.15.1'
@@ -45,6 +43,7 @@ steps:
     JAVA_HOME: $(JAVA_HOME)
 
 - script: |
+    export JAVA_HOME=/usr/lib/jvm/jdk-17
     export PATH=$JAVA_HOME/bin:$PATH
     java -version
     npm install

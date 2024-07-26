@@ -11,10 +11,11 @@ steps:
 - script: |
     sudo apt-get update
     sudo apt-get install -y wget tar unzip
-    wget https://download.java.net/java/GA/jdk17/35/GPL/openjdk-17_linux-x64_bin.tar.gz || { echo "Failed to download Java"; exit 1; }
-    tar -xvf openjdk-17_linux-x64_bin.tar.gz || { echo "Failed to extract Java"; exit 1; }
-    sudo mkdir -p /usr/lib/jvm/jdk-17
-    sudo mv jdk-17/* /usr/lib/jvm/jdk-17
+    echo "Downloading Java..."
+    wget -O openjdk-17_linux-x64_bin.tar.gz https://download.java.net/java/GA/jdk17/35/GPL/openjdk-17_linux-x64_bin.tar.gz || { echo "Download failed"; exit 1; }
+    echo "Extracting Java..."
+    tar -xvf openjdk-17_linux-x64_bin.tar.gz || { echo "Extraction failed"; exit 1; }
+    sudo mv jdk-17 /usr/lib/jvm/jdk-17
     sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-17/bin/java 1
     sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-17/bin/javac 1
     sudo update-alternatives --set java /usr/lib/jvm/jdk-17/bin/java
@@ -29,7 +30,7 @@ steps:
   displayName: 'Install and Verify Java 17'
 
 - script: |
-    wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip || { echo "Failed to download Android command-line tools"; exit 1; }
+    wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
     unzip commandlinetools-linux-8512546_latest.zip -d $HOME/android-sdk
     export PATH=$PATH:$HOME/android-sdk/cmdline-tools/bin
     yes | sdkmanager --licenses

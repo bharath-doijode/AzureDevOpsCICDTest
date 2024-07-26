@@ -57,3 +57,10 @@ steps:
   displayName: 'npm install and build'
   env:
     JAVA_HOME: $(JAVA_HOME)
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '**/app/build/outputs/apk/debug/*.apk'
+    ArtifactName: 'debug-apk'
+    publishLocation: 'Container'
+  displayName: 'Publish APK Artifact'

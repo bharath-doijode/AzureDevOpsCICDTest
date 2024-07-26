@@ -31,8 +31,9 @@ steps:
 
 - script: |
     wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
-    mkdir -p $HOME/android-sdk/cmdline-tools/latest
-    unzip commandlinetools-linux-8512546_latest.zip -d $HOME/android-sdk/cmdline-tools/latest
+    mkdir -p $HOME/android-sdk/cmdline-tools
+    unzip commandlinetools-linux-8512546_latest.zip -d $HOME/android-sdk/cmdline-tools
+    mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
     export ANDROID_SDK_ROOT=$HOME/android-sdk
     export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
     yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses

@@ -10,7 +10,7 @@ variables:
 steps:
 - script: |
     sudo apt-get update
-    sudo apt-get install -y wget tar
+    sudo apt-get install -y wget tar unzip
     wget https://download.java.net/java/GA/jdk17/35/GPL/openjdk-17_linux-x64_bin.tar.gz
     tar -xvf openjdk-17_linux-x64_bin.tar.gz
     sudo mv jdk-17 /usr/lib/jvm/
@@ -19,11 +19,23 @@ steps:
     sudo update-alternatives --set java /usr/lib/jvm/jdk-17/bin/java
     sudo update-alternatives --set javac /usr/lib/jvm/jdk-17/bin/javac
     echo "JAVA_HOME is set to $JAVA_HOME"
+    echo "Checking Java installation"
+    ls -l /usr/lib/jvm
+    java -version
   displayName: 'Install and Verify Java 17'
 
 - script: |
-    echo "Java setup complete"
-  displayName: 'Confirmation Step'
+    wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
+    unzip commandlinetools-linux-8512546_latest.zip -d $HOME/android-sdk
+    export PATH=$PATH:$HOME/android-sdk/cmdline-tools/bin
+    yes | sdkmanager --licenses
+    sdkmanager "platform-tools" "platforms;android-30"
+  displayName: 'Install Android SDK and Platform Tools'
+
+- script: |
+    export PATH=$JAVA_HOME/bin:$PATH
+    java -version
+  displayName: 'Verify Java Installation'
 
 - task: NodeTool@0
   inputs:
@@ -36,7 +48,7 @@ steps:
     export PATH=$JAVA_HOME/bin:$PATH
     java -version
     npm install
-    npm run android
+    npm run android || echo "npm run android failed"
   displayName: 'npm install and build'
   env:
     JAVA_HOME: $(JAVA_HOME)

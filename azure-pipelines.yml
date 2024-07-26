@@ -12,9 +12,9 @@ steps:
     sudo apt-get update
     sudo apt-get install -y wget tar unzip
     echo "Downloading Java..."
-    wget -O openjdk-17.0.2_linux-aarch64_bin.tar.gz https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-aarch64_bin.tar.gz || { echo "Download failed"; exit 1; }
+    wget -O openjdk-17.0.2_linux-x64_bin.tar.gz https://download.java.net/java/GA/jdk17.0.2/dfd4a8d0985749f896bed50d7138ee7f/8/GPL/openjdk-17.0.2_linux-x64_bin.tar.gz || { echo "Download failed"; exit 1; }
     echo "Extracting Java..."
-    tar -xvf openjdk-17.0.2_linux-aarch64_bin.tar.gz || { echo "Extraction failed"; exit 1; }
+    tar -xvf openjdk-17.0.2_linux-x64_bin.tar.gz || { echo "Extraction failed"; exit 1; }
     sudo mv jdk-17.0.2 /usr/lib/jvm/jdk-17
     sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-17/bin/java 1
     sudo update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-17/bin/javac 1

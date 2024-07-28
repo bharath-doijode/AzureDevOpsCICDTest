@@ -6,7 +6,6 @@ pool:
 
 variables:
   JAVA_HOME: /usr/lib/jvm/jdk-17
-  ANDROID_SDK_ROOT: $(HOME)/android-sdk
 
 steps:
 - script: |
@@ -32,12 +31,13 @@ steps:
 
 - script: |
     wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
-    mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
-    unzip commandlinetools-linux-8512546_latest.zip -d $ANDROID_SDK_ROOT/cmdline-tools
-    mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
-    export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools
-    yes | sdkmanager --licenses
-    sdkmanager "platform-tools" "platforms;android-30" "platforms;android-31" "platforms;android-32" "platforms;android-33" "platforms;android-34"
+    mkdir -p $HOME/android-sdk/cmdline-tools
+    unzip commandlinetools-linux-8512546_latest.zip -d $HOME/android-sdk/cmdline-tools
+    mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+    export ANDROID_SDK_ROOT=$HOME/android-sdk
+    export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
+    yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
+    $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-30" "platforms;android-31" "platforms;android-32" "platforms;android-33" "platforms;android-34"
   displayName: 'Install Android SDK and Platform Tools'
 
 - task: NodeTool@0
@@ -54,21 +54,6 @@ steps:
     npm install
     cd android
     ./gradlew assembleDebug
-    cd ..
-    echo "Listing directory structure to find APK..."
-    find . -name "*.apk"
   displayName: 'npm install and build'
   env:
     JAVA_HOME: $(JAVA_HOME)
-
-- script: |
-    echo "Contents of /home/vsts/work/1/s/android/app/build/outputs/apk/debug/"
-    ls -R /home/vsts/work/1/s/android/app/build/outputs/apk/debug/
-  displayName: 'List APK Directory'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: 'android/app/build/outputs/apk/debug/*.apk'
-    ArtifactName: 'debug-apk'
-    publishLocation: 'Container'
-  displayName: 'Publish APK Artifact'

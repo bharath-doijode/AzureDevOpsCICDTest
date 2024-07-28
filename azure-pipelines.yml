@@ -61,14 +61,9 @@ steps:
   env:
     JAVA_HOME: $(JAVA_HOME)
 
-- script: |
-    echo "Contents of /home/vsts/work/1/s/android/app/build/outputs/apk/debug/"
-    ls -R /home/vsts/work/1/s/android/app/build/outputs/apk/debug/
-  displayName: 'List APK Directory'
-
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: 'android/app/build/outputs/apk/debug/*.apk'
+    PathtoPublish: 'android/app/build/outputs/apk/debug/app-debug.apk'
     ArtifactName: 'debug-apk'
     publishLocation: 'Container'
   displayName: 'Publish APK Artifact'

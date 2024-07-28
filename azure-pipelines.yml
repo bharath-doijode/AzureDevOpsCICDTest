@@ -54,6 +54,9 @@ steps:
     npm install
     cd android
     ./gradlew assembleDebug
+    cd ..
+    echo "Listing directory structure to find APK..."
+    find . -name "*.apk"
   displayName: 'npm install and build'
   env:
     JAVA_HOME: $(JAVA_HOME)

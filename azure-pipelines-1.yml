@@ -6,6 +6,7 @@ pool:
 
 variables:
   NODE_VERSION: 20.15.1
+  XCODE_VERSION: 15.4
   XCODE_PROJECT: AzureDevOpsCICDTest.xcworkspace
   SCHEME: Debug
 
@@ -21,6 +22,8 @@ steps:
     pod install
   displayName: 'Install React Native CLI and project dependencies'
   
+
+  
 - task: Xcode@5
   inputs:
     actions: 'build'
@@ -33,7 +36,10 @@ steps:
     destinationPlatformOption: 'iOS Simulator'
     args: '-derivedDataPath $(Build.SourcesDirectory)/build'
   displayName: 'Build iOS project'
-  
+- script: |
+    sudo xcode-select --switch /Applications/Xcode_$(XCODE_VERSION).app/Contents/Developer
+    xcodebuild -version
+  displayName: 'Select Xcode version'  
 - script: |
     xcodebuild -workspace ios/$(XCODE_PROJECT) -scheme $(SCHEME) -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build
   displayName: 'Build iOS project'

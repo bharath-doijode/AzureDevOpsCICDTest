@@ -20,7 +20,20 @@ steps:
     cd ios
     pod install
   displayName: 'Install React Native CLI and project dependencies'
-
+  
+- task: Xcode@5
+  inputs:
+    actions: 'build'
+    configuration: 'Debug'
+    sdk: 'iphonesimulator'
+    scheme: '$(SCHEME)'
+    xcWorkspacePath: 'ios/$(XCODE_PROJECT)'
+    packageApp: false
+    buildForTesting: false
+    destinationPlatformOption: 'iOS Simulator'
+    args: '-derivedDataPath $(Build.SourcesDirectory)/build'
+  displayName: 'Build iOS project'
+  
 - script: |
     xcodebuild -workspace ios/$(XCODE_PROJECT) -scheme $(SCHEME) -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build
   displayName: 'Build iOS project'

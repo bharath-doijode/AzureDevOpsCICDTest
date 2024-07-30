@@ -51,9 +51,17 @@ steps:
     xcodebuild -workspace ios/$(XCODE_PROJECT) -scheme $(SCHEME) -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build
   displayName: 'Build iOS project'
 
+- script: |
+    # Convert .app to .ipa
+    mkdir -p Payload
+    cp -r ios/build/Build/Products/Debug-iphonesimulator/AzureDevOpsCICDTest.app Payload/
+    zip -r AzureDevOpsCICDTest.ipa Payload/
+    rm -rf Payload
+  displayName: 'Convert .app to .ipa'
+
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: 'ios/build/Build/Products/Debug-iphonesimulator/AzureDevOpsCICDTest.app'
-    ArtifactName: 'iOS-App'
+    PathtoPublish: 'AzureDevOpsCICDTest.ipa'
+    ArtifactName: 'iOS-IPA'
     publishLocation: 'Container'
-  displayName: 'Publish iOS App Artifact'
+  displayName: 'Publish iOS IPA Artifact'

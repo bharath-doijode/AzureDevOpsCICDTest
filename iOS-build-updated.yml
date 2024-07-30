@@ -1,0 +1,53 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'macOS-14'
+
+variables:
+  NODE_VERSION: 20.15.1
+  XCODE_VERSION: 15.4
+  XCODE_PROJECT: AzureDevOpsCICDTest.xcworkspace
+  SCHEME: Debug
+
+steps:
+- script: |
+    # Ensure Xcode 15.4 is selected
+    sudo xcode-select --switch /Applications/Xcode_$(XCODE_VERSION).app/Contents/Developer
+    xcodebuild -version
+  displayName: 'Select Xcode version'
+
+- task: UseNode@1
+  inputs:
+    version: $(NODE_VERSION)
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+    cd ios
+    pod install
+  displayName: 'Install React Native CLI and project dependencies'
+
+- task: Xcode@5
+  inputs:
+    actions: 'build'
+    configuration: 'Debug'
+    sdk: 'iphonesimulator'
+    scheme: '$(SCHEME)'
+    xcWorkspacePath: 'ios/$(XCODE_PROJECT)'
+    packageApp: false
+    buildForTesting: false
+    destinationPlatformOption: 'iOS Simulator'
+    args: '-derivedDataPath $(Build.SourcesDirectory)/build'
+  displayName: 'Build iOS project'
+
+- script: |
+    xcodebuild -workspace ios/$(XCODE_PROJECT) -scheme $(SCHEME) -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build
+  displayName: 'Build iOS project'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'ios/build/Build/Products/Debug-iphonesimulator/AzureDevOpsCICDTest.app'
+    ArtifactName: 'iOS-App'
+    publishLocation: 'Container'
+  displayName: 'Publish iOS App Artifact'

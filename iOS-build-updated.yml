@@ -8,7 +8,7 @@ variables:
   NODE_VERSION: 20.15.1
   XCODE_VERSION: 15.4
   XCODE_PROJECT: AzureDevOpsCICDTest.xcworkspace
-  SCHEME: Debug
+  SCHEME: AzureDevOpsCICDTest
 
 steps:
 - script: |
